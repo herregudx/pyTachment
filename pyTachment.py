@@ -2,6 +2,8 @@ import os
 import email
 from email import policy
 from email.parser import BytesParser
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
 def extract_attachments(eml_file, output_folder):
     os.makedirs(output_folder, exist_ok=True)
@@ -18,8 +20,18 @@ def extract_attachments(eml_file, output_folder):
             with open(filepath, 'wb') as attachment_file:
                 attachment_file.write(part.get_payload(decode=True))
             print(f"Saved attachment: {filename}")
+    messagebox.showinfo("Success", f"Attachments saved to {output_folder}")
+
+def select_file():
+    file_path = filedialog.askopenfilename(filetypes=[("Email Files", "*.eml")])
+    if file_path:
+        output_folder = file_path[:-4] + "_attachments"
+        extract_attachments(file_path, output_folder)
+
+def main():
+    root = tk.Tk()
+    root.withdraw()
+    select_file()
 
 if __name__ == "__main__":
-    eml_file = input("Filename: ")
-    output_folder = eml_file[:-4] + "_attachments"
-    extract_attachments(eml_file, output_folder)
+    main()
